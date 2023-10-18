@@ -1,13 +1,13 @@
-# Have an AI Chat with Simon Wardley's Book
-Chat with Simon Wardley's Book on Wardley Mapping
+# Have an AI Chat with the MLOps Conference Videos
+Chat with the conference videos.
 
-Chat with Simon Wardley's Book is an AI-based application that allows you to interact with the content of Simon Wardley's book using GPT-4 model and OpenAI API. It utilizes the Streamlit framework to present an interactive user interface, making it easy for users to ask questions and get answers.
+Chat with MLOps Conference Videos is an AI-based application that allows you to interact with the content of the conference videos using GPT-4 model and OpenAI API. It utilizes the Streamlit framework to present an interactive user interface, making it easy for users to ask questions and get answers.
 \
 \
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://wardley-book-chat.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://mlops-chat.streamlit.app/)
 
 ## Features
-- Querying the book using natural language and AI.
+- Querying the conference videos using natural language and AI.
 - Incorporates OpenAI's GPT-4 model for generating answers.
 - Uses Streamlit for a user-friendly UI.
 
