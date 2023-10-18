@@ -56,7 +56,7 @@ st.sidebar.markdown("May run out of OpenAI credits")
 st.sidebar.divider()
 
 # Get datastore
-DATASTORE = "datastore"
+DATASTORE = "data_store"
 
 if os.path.exists(DATASTORE):
     vector_store = FAISS.load_local(
