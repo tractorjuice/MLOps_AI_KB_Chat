@@ -42,9 +42,9 @@ def clean_text(text):
     text = remove_markdown(text)
     return text
 
-st.set_page_config(page_title="Chat with Simon Wardley's Book")
-st.title("Chat with Simon Wardley's Book")
-st.sidebar.markdown("# Query Simon's book using AI")
+st.set_page_config(page_title="Chat with the MLOps Conference Videos")
+st.title("Chat with MLOps Conference Videos")
+st.sidebar.markdown("# Query Videos Using AI")
 st.sidebar.divider()
 st.sidebar.markdown("Developed by Mark Craddock](https://twitter.com/mcraddock)", unsafe_allow_html=True)
 st.sidebar.markdown("Current Version: 1.0.0")
@@ -53,7 +53,6 @@ st.sidebar.markdown("Using GPT-4 API")
 st.sidebar.markdown("Uses FAISS")
 st.sidebar.markdown("May run out of OpenAI credits")
 st.sidebar.divider()
-st.sidebar.markdown("Wardley Mapping is provided courtesy of Simon Wardley and licensed Creative Commons Attribution Share-Alike.")
 
 # Get datastore
 DATA_STORE_DIR = "data_store"
@@ -67,10 +66,10 @@ else:
     st.write(f"Missing files. Upload index.faiss and index.pkl files to {DATA_STORE_DIR} directory first")
 
 system_template="""
-    As a chatbot, analyze the provided book on Wardley Mapping and offer insights and recommendations.
+    As a chatbot, analyse the provided MLOps conference videos and offer insights and recommendations.
     Suggestions:
-    Explain the analysis process for a Wardley Map
-    Discuss the key insights derived from the book
+    Explain MLOps
+    Discuss the key insights derived from the conference videos
     Provide recommendations based on the analysis
     Use the following pieces of context to answer the users question.
     If you don't know the answer, just say that "I don't know", don't try to make up an answer.
@@ -87,7 +86,7 @@ llm = PromptLayerChatOpenAI(
     model_name=MODEL,
     temperature=0,
     max_tokens=2000,
-    pl_tags=["bookchat"],
+    pl_tags=["mlopschat"],
 )  # Modify model_name if you have access to GPT-4
 
 chain = RetrievalQAWithSourcesChain.from_chain_type(
@@ -106,7 +105,7 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-if query := st.chat_input("What question do you have for the book?"):
+if query := st.chat_input("What question do you have for the conference?"):
     st.session_state.messages.append({"role": "user", "content": query})
     with st.chat_message("user"):
         st.markdown(query)
