@@ -2,5 +2,6 @@ langchain
 openai
 streamlit
 faiss-cpu
-promptlayer
 tiktoken
+promptlayer
+streamlit-player
