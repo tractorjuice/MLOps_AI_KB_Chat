@@ -8,6 +8,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chat_models import PromptLayerChatOpenAI
 from langchain.vectorstores import FAISS
 from langchain.prompts.chat import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
+from streamlit_player import st_player
 
 # Set OpenAI Model and API key
 openai.api_key = st.secrets["OPENAI_API_KEY"]
@@ -42,9 +43,9 @@ def clean_text(text):
     text = remove_markdown(text)
     return text
 
-st.set_page_config(page_title="Chat with the MLOps Conference Videos")
-st.title("Chat with MLOps Conference Videos")
-st.sidebar.markdown("# Query Videos Using AI")
+st.set_page_config(page_title="Chat with MLOps Conference Videos")
+st.title("Chat with MLOps Videos")
+st.sidebar.markdown("# Query Videos using AI")
 st.sidebar.divider()
 st.sidebar.markdown("Developed by Mark Craddock](https://twitter.com/mcraddock)", unsafe_allow_html=True)
 st.sidebar.markdown("Current Version: 1.0.0")
@@ -55,21 +56,21 @@ st.sidebar.markdown("May run out of OpenAI credits")
 st.sidebar.divider()
 
 # Get datastore
-DATA_STORE_DIR = "data_store"
+DATASTORE = "datastore"
 
-if os.path.exists(DATA_STORE_DIR):
+if os.path.exists(DATASTORE):
     vector_store = FAISS.load_local(
-        DATA_STORE_DIR,
+        DATASTORE,
         OpenAIEmbeddings()
     )
 else:
     st.write(f"Missing files. Upload index.faiss and index.pkl files to {DATA_STORE_DIR} directory first")
 
 system_template="""
-    As a chatbot, analyse the provided MLOps conference videos and offer insights and recommendations.
+    As a chatbot, analyse the provided videos on MLOps and offer insights and recommendations.
     Suggestions:
     Explain MLOps
-    Discuss the key insights derived from the conference videos
+    Discuss the key insights derived from the videos
     Provide recommendations based on the analysis
     Use the following pieces of context to answer the users question.
     If you don't know the answer, just say that "I don't know", don't try to make up an answer.
@@ -92,7 +93,7 @@ llm = PromptLayerChatOpenAI(
 chain = RetrievalQAWithSourcesChain.from_chain_type(
     llm=llm,
     chain_type="stuff",
-    retriever=vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 5}), # Use MMR search and return 5 (max 20) sources
+    retriever=vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 3}), # Use MMR search and return 5 (max 20) video sources
     return_source_documents=True,
     chain_type_kwargs=chain_type_kwargs
 )
@@ -105,7 +106,7 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-if query := st.chat_input("What question do you have for the conference?"):
+if query := st.chat_input("What question do you have for the videos?"):
     st.session_state.messages.append({"role": "user", "content": query})
     with st.chat_message("user"):
         st.markdown(query)
@@ -120,8 +121,17 @@ if query := st.chat_input("What question do you have for the conference?"):
             for index, document in enumerate(source_documents):
                 if 'source' in document.metadata:
                     source_details = document.metadata['source']
+                    with st.expander(f"Source {index + 1}: {document.metadata['source']}"):
+                        st.write(f"Source {index + 1}: {document.metadata['source']}\n")
+                        st.write(f"Video title: {document.metadata['title']}")
+                        st.write(f"Video author: {document.metadata['author']}")
+                        st.write(f"Source video: https://youtu.be/{document.metadata['source_video']}?t={int(document.metadata['start_time'])}")
+                        st.write(f"Start Time: {document.metadata['start_time']}")
+                        
                     cleaned_content = clean_text(document.page_content)
-                    st.warning(f"Source {index + 1}: Page {document.metadata['page']}\n")
-                    st.write(f"{cleaned_content}\n")
+                    st.write(f"Content: {cleaned_content}\n")
+                    video_id = f"Source video: https://youtu.be/{document.metadata['source_video']}?t={int(document.metadata['start_time'])}"
+                    key = f"video_{index}"
+                    st_player(video_id, height=150, key=key)
 
         st.session_state.messages.append({"role": "assistant", "content": response['answer']})
