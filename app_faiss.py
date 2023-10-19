@@ -93,7 +93,7 @@ llm = PromptLayerChatOpenAI(
 chain = RetrievalQAWithSourcesChain.from_chain_type(
     llm=llm,
     chain_type="stuff",
-    retriever=vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 3}), # Use MMR search and return 5 (max 20) video sources
+    retriever=vector_store.as_retriever(search_kwargs={"k": 3}), # Use MMR search and return 5 (max 20) video sources
     return_source_documents=True,
     chain_type_kwargs=chain_type_kwargs
 )
