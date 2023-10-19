@@ -126,11 +126,11 @@ if query := st.chat_input("What question do you have for the videos?"):
                         st.write(f"Video author: {document.metadata['author']}")
                         cleaned_content = clean_text(document.page_content)
                         st.write(f"Content: {cleaned_content}\n")
-                        #st.write(f"Source video: https://youtu.be/{document.metadata['source_video']}?t={int(document.metadata['start_time'])}")
-                        #st.write(f"Start Time: {document.metadata['start_time']}")
+                        st.write(f"Source video: https://youtu.be/{document.metadata['source_url']}?t={int(document.metadata['start_time'])}")
+                        st.write(f"Start Time: {document.metadata['source']}")
                         
-                    #video_id = f"Source video: https://youtu.be/{document.metadata['source_video']}?t={int(document.metadata['start_time'])}"
-                    #key = f"video_{index}"
-                    #st_player(video_id, height=150, key=key)
+                    video_id = f"Source video: https://youtu.be/{document.metadata['source_url']}?t={int(document.metadata['source'])}"
+                    key = f"video_{index}"
+                    st_player(video_id, height=150, key=key)
 
         st.session_state.messages.append({"role": "assistant", "content": response['answer']})
