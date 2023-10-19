@@ -40,10 +40,10 @@ Once the application is running, you can use the input box labeled "Question for
 This application is developed by Mark Craddock. You can follow him on Twitter at https://twitter.com/mcraddock.
 
 ## Version Info
-The current version of this application is 0.1.4.
+The current version of this application is 1.0.0.
 
 ## Disclaimer
-This application is not optimized and may run out of OpenAI credits. Also, Wardley Mapping is provided courtesy of Simon Wardley and is licensed under Creative Commons Attribution Share-Alike.
+This application is not optimized and may run out of OpenAI credits.
 
 Please use responsibly and in accordance with OpenAI's use-case policy.
 
