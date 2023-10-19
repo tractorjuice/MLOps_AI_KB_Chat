@@ -125,8 +125,8 @@ if query := st.chat_input("What question do you have for the videos?"):
                         st.write(f"Source {index + 1}: {document.metadata['source']}\n")
                         st.write(f"Video title: {document.metadata['title']}")
                         st.write(f"Video author: {document.metadata['author']}")
-                        st.write(f"Source video: https://youtu.be/{document.metadata['source_video']}?t={int(document.metadata['start_time'])}")
-                        st.write(f"Start Time: {document.metadata['start_time']}")
+                        #st.write(f"Source video: https://youtu.be/{document.metadata['source_video']}?t={int(document.metadata['start_time'])}")
+                        #st.write(f"Start Time: {document.metadata['start_time']}")
                         
                     cleaned_content = clean_text(document.page_content)
                     st.write(f"Content: {cleaned_content}\n")
