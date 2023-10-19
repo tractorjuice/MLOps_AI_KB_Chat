@@ -64,7 +64,7 @@ if os.path.exists(DATASTORE):
         OpenAIEmbeddings()
     )
 else:
-    st.write(f"Missing files. Upload index.faiss and index.pkl files to {DATA_STORE_DIR} directory first")
+    st.write(f"Missing files. Upload index.faiss and index.pkl files to {DATASTORE} directory first")
 
 system_template="""
     As a chatbot, analyse the provided videos on MLOps and offer insights and recommendations.
