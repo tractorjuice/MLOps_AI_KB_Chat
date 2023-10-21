@@ -1,6 +1,6 @@
 # Have an AI Chat with the MLOps Conference Videos
 ## Chat with the conference videos.
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tractorjuice/wardleygptv3)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tractorjuice/MLOps_AI_KB_Chat)
 
 Chat with MLOps Conference Videos is an AI-based application that allows you to interact with the content of the conference videos using GPT-4 model and OpenAI API. It utilizes the Streamlit framework to present an interactive user interface, making it easy for users to ask questions and get answers.
 \
