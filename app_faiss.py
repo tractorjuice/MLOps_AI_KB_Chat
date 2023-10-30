@@ -1,7 +1,9 @@
 import os
 import re
 import openai
+import promptlayer
 import streamlit as st
+import uuid
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -10,9 +12,6 @@ from langchain.vectorstores import FAISS
 from langchain.prompts.chat import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from streamlit_player import st_player
 
-# Set OpenAI Model and API key
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-os.environ["PROMPTLAYER_API_KEY"] = st.secrets["PROMPTLAYER"]
 #MODEL = "gpt-3"
 #MODEL = "gpt-3.5-turbo"
 #MODEL = "gpt-3.5-turbo-0613"
@@ -21,6 +20,9 @@ MODEL = "gpt-3.5-turbo-16k-0613"
 #MODEL = "gpt-4"
 #MODEL = "gpt-4-0613"
 #MODEL = "gpt-4-32k-0613"
+
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 
 # Remove HTML from sources
 def remove_html_tags(text):
@@ -50,11 +52,21 @@ st.sidebar.divider()
 st.sidebar.markdown("Developed by Mark Craddock](https://twitter.com/mcraddock)", unsafe_allow_html=True)
 st.sidebar.markdown("Current Version: 1.0.0")
 st.sidebar.divider()
-st.sidebar.markdown("Using GPT-4 API")
-st.sidebar.markdown("Uses FAISS")
-st.sidebar.markdown("May run out of OpenAI credits")
+st.sidebar.markdown("Using gpt-3.5-turbo-16k-0613 API")
+st.sidebar.markdown(st.session_state.session_id)
 st.sidebar.divider()
+# Check if the user has provided an API key, otherwise default to the secret
+user_openai_api_key = st.sidebar.text_input("Enter your OpenAI API Key:", placeholder="sk-...", type="password")
 
+if user_openai_api_key:
+    # If the user has provided an API key, use it
+    # Swap out openai for promptlayer
+    promptlayer.api_key = st.secrets["PROMPTLAYER"]
+    openai = promptlayer.openai
+    openai.api_key = user_openai_api_key
+else:
+    st.warning("Please enter your OpenAI API key", icon="⚠️")
+    
 # Get datastore
 DATASTORE = "data_store"
 
@@ -106,31 +118,32 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-if query := st.chat_input("What question do you have for the videos?"):
-    st.session_state.messages.append({"role": "user", "content": query})
-    with st.chat_message("user"):
-        st.markdown(query)
-
-    with st.spinner():
-        with st.chat_message("assistant"):
-            response = chain(query)
-            st.markdown(response['answer'])
-            st.divider()
-            
-            source_documents = response['source_documents']
-            for index, document in enumerate(source_documents):
-                if 'source' in document.metadata:
-                    source_details = document.metadata['source']
-                    with st.expander(f"Source {index + 1}: {document.metadata['title']}"):
-                        st.write(f"Source {index + 1}: {document.metadata['title']}\n")
-                        st.write(f"Video author: {document.metadata['author']}")
-                        cleaned_content = clean_text(document.page_content)
-                        st.write(f"Content: {cleaned_content}\n")
-                        st.write(f"Source video: https://youtu.be/{document.metadata['source_url']}?t={int(document.metadata['source'])}")
-                        st.write(f"Start Time: {document.metadata['source']}")
-                        
-                    video_id = f"Source video: https://youtu.be/{document.metadata['source_url']}?t={int(document.metadata['source'])}"
-                    key = f"video_{index}"
-                    st_player(video_id, height=150, key=key)
+if user_openai_key:
+    if query := st.chat_input("What question do you have for the videos?"):
+        st.session_state.messages.append({"role": "user", "content": query})
+        with st.chat_message("user"):
+            st.markdown(query)
+    
+        with st.spinner():
+            with st.chat_message("assistant"):
+                response = chain(query)
+                st.markdown(response['answer'])
+                st.divider()
+                
+                source_documents = response['source_documents']
+                for index, document in enumerate(source_documents):
+                    if 'source' in document.metadata:
+                        source_details = document.metadata['source']
+                        with st.expander(f"Source {index + 1}: {document.metadata['title']}"):
+                            st.write(f"Source {index + 1}: {document.metadata['title']}\n")
+                            st.write(f"Video author: {document.metadata['author']}")
+                            cleaned_content = clean_text(document.page_content)
+                            st.write(f"Content: {cleaned_content}\n")
+                            st.write(f"Source video: https://youtu.be/{document.metadata['source_url']}?t={int(document.metadata['source'])}")
+                            st.write(f"Start Time: {document.metadata['source']}")
+                            
+                        video_id = f"Source video: https://youtu.be/{document.metadata['source_url']}?t={int(document.metadata['source'])}"
+                        key = f"video_{index}"
+                        st_player(video_id, height=150, key=key)
 
         st.session_state.messages.append({"role": "assistant", "content": response['answer']})
