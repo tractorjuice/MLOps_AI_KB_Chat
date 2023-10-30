@@ -98,7 +98,7 @@ llm = PromptLayerChatOpenAI(
     model_name=MODEL,
     temperature=0,
     max_tokens=2000,
-    pl_tags=["mlopschat"],
+    pl_tags=["mlops-chat", st.session_state.session_id],
 )  # Modify model_name if you have access to GPT-4
 
 chain = RetrievalQAWithSourcesChain.from_chain_type(
