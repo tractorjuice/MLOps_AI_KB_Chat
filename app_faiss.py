@@ -12,14 +12,9 @@ from langchain.vectorstores import FAISS
 from langchain.prompts.chat import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from streamlit_player import st_player
 
-#MODEL = "gpt-3"
-#MODEL = "gpt-3.5-turbo"
-#MODEL = "gpt-3.5-turbo-0613"
-#MODEL = "gpt-3.5-turbo-16k"
-MODEL = "gpt-3.5-turbo-16k-0613"
-#MODEL = "gpt-4"
-#MODEL = "gpt-4-0613"
-#MODEL = "gpt-4-32k-0613"
+#MODEL = "gpt-3.5-turbo-16k" # Legacy
+MODEL = "gpt-3.5-turbo-1106" # Latest model
+#MODEL = "gpt-4-1106-preview"
 
 if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
